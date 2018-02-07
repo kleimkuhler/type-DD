@@ -1,0 +1,5 @@
+# Idris programs
+*.ibc
+
+# Emacs turds
+*~
