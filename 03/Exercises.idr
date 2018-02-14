@@ -37,3 +37,21 @@ my_vect_map f xs = map' xs
     map' : Vect n a -> Vect n b
     map' [] = []
     map' (x :: xs) = f x :: map' xs
+
+-- 5
+||| Transposes rows and columns of a Vect of Vects
+createEmpties : Vect n (Vect 0 elem)
+createEmpties = replicate _ []
+
+transposeMat : Vect m (Vect n elem) -> Vect n (Vect m elem)
+transposeMat [] = createEmpties
+transposeMat (x :: xs) = let xsTrans = transposeMat xs in
+                             zipWith (::) x xsTrans
+
+-- 6
+||| Adds two matricies.
+addMatrix : Num a => Vect m (Vect n a) -> Vect m (Vect n a) ->
+            Vect m (Vect n a)
+addMatrix [] [] = []
+addMatrix (x :: xs) (y :: ys) = let addRest = addMatrix xs ys in
+                                    zipWith (+) x y :: addRest
