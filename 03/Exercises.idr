@@ -55,3 +55,17 @@ addMatrix : Num a => Vect m (Vect n a) -> Vect m (Vect n a) ->
 addMatrix [] [] = []
 addMatrix (x :: xs) (y :: ys) = let addRest = addMatrix xs ys in
                                     zipWith (+) x y :: addRest
+
+-- 7
+||| Multiplies two matricies.
+multHelper : Num a => (x : Vect n a) -> (ysTrans : Vect p (Vect n a)) ->
+             Vect p a
+multHelper x [] = []
+multHelper x (y :: ys) = let row = sum (zipWith (*) x y) in
+                             row :: multHelper x ys
+
+multMatrix : Num a => Vect m (Vect n a) -> Vect n (Vect p a) ->
+             Vect m (Vect p a)
+multMatrix [] ys = []
+multMatrix (x :: xs) ys = let ysTrans = transposeMat ys in
+                              multHelper x ysTrans :: multMatrix xs ys
