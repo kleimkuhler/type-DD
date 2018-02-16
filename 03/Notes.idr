@@ -41,7 +41,8 @@ insSort (x :: xs) = let xsSorted = insSort xs in
                         insert x xsSorted
 
 createEmpties : Vect n (Vect 0 elem)
-createEmpties = replicate _ []
+createEmpties {n = Z} = []
+createEmpties {n = (S k)} = [] :: createEmpties
 
 transposeHelper : (x : Vect n elem) -> (xsTrans : Vect n (Vect len elem)) ->
                      Vect n (Vect (S len) elem)
@@ -52,3 +53,11 @@ transposeMat : Vect m (Vect n elem) -> Vect n (Vect m elem)
 transposeMat [] = createEmpties
 transposeMat (x :: xs) = let xsTrans = transposeMat xs in
                              transposeHelper x xsTrans
+
+append : (elem : Type) -> (n : Nat) -> (m: Nat) ->
+         Vect n elem -> Vect m elem -> Vect (n + m) elem
+append elem Z m [] ys = ys
+append elem (S len) m (x :: xs) ys = x :: append elem len m xs ys
+
+my_length : Vect n elem -> Nat
+my_length {n} xs = n
