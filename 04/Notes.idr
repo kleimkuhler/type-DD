@@ -41,3 +41,10 @@ testPicture = Combine (Translate 5 5 rectangle)
               (Combine (Translate 35 5 circle)
               (Translate 15 25 triangle))
 
+%name Shape shape
+%name Picture pic, pic1 
+pictureArea : Picture -> Double
+pictureArea (Primitive shape) = area shape
+pictureArea (Combine pic pic1) = pictureArea pic + pictureArea pic1
+pictureArea (Rotate x pic) = pictureArea pic
+pictureArea (Translate x y pic) = pictureArea pic
