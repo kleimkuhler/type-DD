@@ -6,10 +6,10 @@ data Tree elem = Empty
 insert : Ord elem => elem -> Tree elem -> Tree elem
 insert x Empty = Node Empty x Empty
 insert x orig@(Node left val right)
-  = case compare x val of
-         LT => Node (insert x left) val right
-         EQ => orig
-         GT => Node left val (insert x right)
+       = case compare x val of
+              LT => Node (insert x left) val right
+              EQ => orig
+              GT => Node left val (insert x right)
 
 data BSTree : Type -> Type where
   Empty' : Ord elem => BSTree elem
@@ -21,7 +21,7 @@ data BSTree : Type -> Type where
 insert' : elem -> BSTree elem -> BSTree elem
 insert' x Empty' = Node' Empty' x Empty'
 insert' x orig@(Node' left val right)
-  = case compare x val of
-         LT => Node' (insert' x left) val right
-         EQ => orig
-         GT => Node' left val (insert' x right)
+        = case compare x val of
+               LT => Node' (insert' x left) val right
+               EQ => orig
+               GT => Node' left val (insert' x right)

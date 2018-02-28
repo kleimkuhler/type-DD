@@ -11,7 +11,6 @@ turnClockwise West = North
 
 -- Union type
 ||| Represents shapes
-export
 data Shape = ||| A triangle
              Triangle Double Double
            | ||| A rectangle
@@ -19,14 +18,12 @@ data Shape = ||| A triangle
            | ||| A circle
              Circle Double
 
-export
 area : Shape -> Double
 area (Triangle base height) = 0.5 * base * height
 area (Rectangle length height) = length * height
 area (Circle radius) = pi * radius * radius
 
 -- Recursive type
-export
 data Picture = Primitive Shape
              | Combine Picture Picture
              | Rotate Double Picture
