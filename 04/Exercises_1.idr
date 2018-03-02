@@ -35,6 +35,10 @@ listToTree : Ord a => List a -> BSTree a
 listToTree [] = Empty
 listToTree (x :: xs) = insert x (listToTree xs)
 
+listToTree' : Ord a => List a -> BSTree a
+listToTree' = foldr insert Empty
+
+
 -- 2
 treeToList : BSTree a -> List a
 treeToList Empty = []
