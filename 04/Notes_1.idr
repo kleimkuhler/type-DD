@@ -1,4 +1,4 @@
-module Notes
+module Notes_1
 
 -- Enumerated type
 data Direction = North | East | South | West

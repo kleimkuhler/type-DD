@@ -1,4 +1,4 @@
-module Exercises
+module Exercises_1
 
 data BSTree : Type -> Type where
   Empty : Ord elem => BSTree elem
@@ -87,7 +87,6 @@ testPic1 = Combine (Primitive (Triangle 2 3))
 testPic2 : Picture
 testPic2 = Combine (Primitive (Rectangle 1 3))
                    (Primitive (Circle 4))
-
 
 biggestTriangle : Picture -> Maybe Double
 biggestTriangle (Primitive triangle@(Triangle base height))
