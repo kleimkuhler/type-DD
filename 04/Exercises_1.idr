@@ -45,20 +45,19 @@ treeToList : BSTree a -> List a
 treeToList Empty = []
 treeToList (Node left val right) = treeToList left ++ (val :: treeToList right)
 
--- 2': foldtree implementation
-foldtree : (f : elem -> List elem -> List elem) -> (g : List elem ->
-           List elem -> List elem) -> (init : List elem) ->
-           (input : BSTree elem) -> List elem           
-foldtree f g init Empty = init
-foldtree f g init (Node Empty val right) = f val (foldtree f g init right)
-foldtree f g init (Node left val right) = g (foldtree f g init left)
-                                            (f val (foldtree f g init right))
+-- 2': foldTree implementation
+foldTree : (f : elem -> acc -> acc) -> (g : acc -> acc -> acc) ->
+           (init : acc) -> (input : BSTree elem) -> acc           
+foldTree f g init Empty = init
+foldTree f g init (Node Empty val right) = f val (foldTree f g init right)
+foldTree f g init (Node left val right) = g (foldTree f g init left)
+                                            (f val (foldTree f g init right))
 
 treeToList' : Ord a => BSTree a -> List a
-treeToList' = foldtree (::) (++) []
+treeToList' = foldTree (::) (++) []
 
-sumTree : Num a => BSTree a -> List a
-sumTree = foldtree (+) (+) 0
+sumTree : Num a => BSTree a -> a
+sumTree = foldTree (+) (+) 0
 
 -- 3
 data Expr = Val Int
