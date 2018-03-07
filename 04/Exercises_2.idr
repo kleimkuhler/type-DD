@@ -15,6 +15,14 @@ import Data.Vect
   I am leaving this note as a discussion point.
 -}
 
+vectTake : (n : Nat) -> Vect (n + m) a -> Vect n a
+vectTake Z xs = []
+vectTake (S k) (x :: xs) = x :: vectTake k xs
+
+vectTake' : (n : Fin (S m)) -> Vect m a -> Vect (finToNat n) a
+vectTake' FZ xs = []
+vectTake' (FS n') (x :: xs) = x :: vectTake' n' xs
+
 -- 5
 sumEntries : Num a => (pos : Integer) -> Vect n a -> Vect n a -> Maybe a
 sumEntries {n} pos xs ys = case integerToFin pos n of
