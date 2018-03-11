@@ -46,7 +46,15 @@ getEntry pos store
               Just id => Just (index id store_items ++ "\n", store)
 
 searchEntry : (substr : String) -> (store : DataStore) -> Maybe (String, DataStore)
-searchEntry substr store = ?searchEntry_rhs
+searchEntry substr store = Just (searchStore 0 (items store), store)
+  where
+    searchStore : Nat -> (items : Vect n String) -> String
+    searchStore k [] = ""
+    searchStore k (x :: xs)
+      = let rest = searchStore (k + 1) xs in
+        if isInfixOf substr x
+          then show k ++ ": " ++ x ++ "\n" ++ rest
+          else rest
 
 processInput : DataStore -> String -> Maybe (String, DataStore)
 processInput store inp
