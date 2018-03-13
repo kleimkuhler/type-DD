@@ -1,4 +1,4 @@
-module Exercises_2.idr
+module Exercises_2
 
 import Data.Vect
 

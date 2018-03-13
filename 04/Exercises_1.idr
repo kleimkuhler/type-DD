@@ -39,7 +39,6 @@ listToTree (x :: xs) = insert x (listToTree xs)
 listToTree' : Ord a => List a -> BSTree a
 listToTree' = foldr insert Empty
 
-
 -- 2
 treeToList : BSTree a -> List a
 treeToList Empty = []
@@ -52,18 +51,42 @@ foldTree f g init Empty = init
 foldTree f g init (Node Empty val right) = f val (foldTree f g init right)
 foldTree f g init (Node left val right) = g (foldTree f g init left)
                                             (f val (foldTree f g init right))
+                                            
+cataTree : acc -> (f : acc -> elem -> acc -> acc) -> BSTree elem -> acc
+cataTree init f Empty = init
+cataTree init f (Node left val right) = f (cataTree init f left)
+                                          val
+                                          (cataTree init f right)
+
+reduceTree : (f : acc -> acc -> acc) -> acc -> BSTree acc -> acc
+reduceTree f init = cataTree init (\left, val, right => (f left (f val right)))
+
 
 treeToList' : Ord a => BSTree a -> List a
 treeToList' = foldTree (::) (++) []
 
+treeToList'' : Ord a => BSTree a -> List a
+treeToList'' = cataTree [] (\left, val, right => left ++ [val] ++ right)
+
 sumTree : Num a => BSTree a -> a
 sumTree = foldTree (+) (+) 0
+
+sumTree' : Num a => BSTree a -> a
+sumTree' = cataTree 0 (\left, val, right => left + val + right)
+
+sumTree'' : Num a => BSTree a -> a
+sumTree'' = reduceTree (+) 0
+
+
 
 -- 3
 data Expr = Val Int
           | Add Expr Expr
           | Sub Expr Expr
           | Mult Expr Expr
+          
+data Expr' = Val' Int
+           | Op (Int->Int->Int) Expr' Expr'
 
 -- 4
 evaluate : Expr -> Int
@@ -71,6 +94,10 @@ evaluate (Val x) = x
 evaluate (Add x y) = evaluate x + evaluate y
 evaluate (Sub x y) = evaluate x - evaluate y
 evaluate (Mult x y) = evaluate x * evaluate y
+
+evaluate' : Expr' -> Int
+evaluate' (Val' x) = x
+evaluate' (Op f x y) = f (evaluate' x) (evaluate' y)
 
 -- 5
 maxMaybe : Ord a => Maybe a -> Maybe a -> Maybe a
@@ -89,7 +116,7 @@ testPic2 = Combine (Primitive (Rectangle 1 3))
                    (Primitive (Circle 4))
 
 biggestTriangle : Picture -> Maybe Double
-biggestTriangle (Primitive triangle@(Triangle base height))
+biggestTriangle (Primitive triangle@(Triangle _ _))
                 = Just (area triangle)
 biggestTriangle (Primitive _) = Nothing
 biggestTriangle (Combine pic1 pic2) = maxMaybe (biggestTriangle pic1)
