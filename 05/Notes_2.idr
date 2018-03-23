@@ -5,6 +5,7 @@ import System
 %default total
 
 -- Does this need to be passed to printLn?
+export
 readNumber : IO (Maybe Nat)
 readNumber = do 
   input <- getLine
