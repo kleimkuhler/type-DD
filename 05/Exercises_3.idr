@@ -33,3 +33,21 @@ readVectFile filename = do Right input <- readFile filename
     readVect [] = (_ ** [])
     readVect (x :: xs) = let (_ ** rest) = readVect xs in
                              (_ ** x :: rest)
+
+readVectFile' : (filename : String) -> IO (n ** Vect n String)
+readVectFile' filename = do Right h <- openFile filename Read
+                                | Left err => pure (_ ** [])
+                            Right content <- readFile' h
+                                | Left err => pure (_ ** [])
+                            closeFile h
+                            pure content 
+  where
+    readFile' : (h : File) -> IO (Either FileError (n ** Vect n String))
+    readFile' h = do eof <- fEOF h
+                     if eof
+                        then pure (Right (_ ** []))
+                        else do Right line <- fGetLine h
+                                    | Left err => pure (Left err)
+                                Right (_ ** rest) <- readFile' h
+                                    | Left err => pure (Left err)
+                                pure (Right (_ ** line :: rest))
