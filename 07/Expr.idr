@@ -27,7 +27,7 @@ Neg ty => Neg (Expr ty) where
 Abs ty => Abs (Expr ty) where
   abs = Abs
 
--- 1
+-- 2.1
 Show ty => Show (Expr ty) where
   show (Val x) = show x
   show (Add x y) = "(" ++ show x ++ " + " ++ show y ++ ")"
@@ -36,10 +36,19 @@ Show ty => Show (Expr ty) where
   show (Div x y) = "(" ++ show x ++ " `div` " ++ show y ++ ")"
   show (Abs x) = "abs(" ++ show x ++ ")"
 
--- 2
+-- 2.2
 (Abs ty, Eq ty, Integral ty, Neg ty) => Eq (Expr ty) where
   (==) x y = eval x == eval y
 
--- 3
+-- 2.3
 (Abs ty, Integral ty, Neg ty) => Cast (Expr ty) ty where
   cast orig = eval orig
+
+-- 3.1
+Functor Expr where
+  map func (Val x) = Val (func x)
+  map func (Add x y) = Add (map func x) (map func y)
+  map func (Sub x y) = Sub (map func x) (map func y)
+  map func (Mul x y) = Mul (map func x) (map func y)
+  map func (Div x y) = Div (map func x) (map func y)
+  map func (Abs x) = Abs (map func x)
