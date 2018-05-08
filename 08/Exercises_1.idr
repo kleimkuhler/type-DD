@@ -1,16 +1,16 @@
 module Exercises_1
 
+%default total
+
 -- 1
 same_cons : {xs : List a} -> {ys : List a} ->
             xs = ys -> x :: xs = x :: ys
 same_cons Refl = Refl
--- same_cons = cong
 
 -- 2
 same_lists : {xs : List a} -> {ys : List a} ->
              x = y -> xs = ys -> x :: xs = y :: ys
 same_lists Refl Refl = Refl
--- same_lists prf prf1 = ?same_lists_rhs
 
 -- 3
 data ThreeEq : a -> b -> c -> Type where

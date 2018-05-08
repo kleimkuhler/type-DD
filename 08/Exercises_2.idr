@@ -2,22 +2,20 @@ module Exercises_2
 
 import Data.Vect
 
+%default total
+
 -- 1
 plusCommutative' : (n : Nat) -> (m : Nat) -> n + m = m + n
-plusCommutative' Z m = rewrite plusZeroRightNeutral m in Refl
-plusCommutative' (S k) m = let ind = plusCommutative' k m in
-                               rewrite ind in
-                                       rewrite plusSuccRightSucc m k in Refl
+plusCommutative' Z m = sym (plusZeroRightNeutral m)
+plusCommutative' (S k) m = rewrite plusCommutative' k m in
+                                   plusSuccRightSucc m k
 
 -- 2
 reverseProof_Z : Vect n a -> Vect (plus n 0) a
-reverseProof_Z {n} xs = let ind = plusZeroRightNeutral n in
-                            rewrite ind in xs
+reverseProof_Z {n} xs = rewrite plusZeroRightNeutral n in xs
 
--- Note: Use of `sym`
 reverseProof_S : Vect (S n + len) a -> Vect (plus n (S len)) a
-reverseProof_S {n} {len} xs = let ind = sym $ plusSuccRightSucc n len in
-                                  rewrite ind in xs
+reverseProof_S {n} {len} xs = rewrite sym (plusSuccRightSucc n len) in xs
 
 reverse' : Vect n a -> Vect n a
 reverse' xs = loop [] xs
