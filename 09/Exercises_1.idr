@@ -22,11 +22,15 @@ exhaustiveLast : (notLast : (x = value) -> Void) -> Last [x] value -> Void
 exhaustiveLast notLast LastOne = notLast Refl
 exhaustiveLast notLast (LastCons prf) = notInNil prf
 
+notLastCons : (notLast : Last (y :: xs) value -> Void) ->
+              Last (x :: (y :: xs)) value -> Void
+notLastCons notLast (LastCons prf) = notLast prf
+
 isLast : DecEq a => (xs : List a) -> (value : a) -> Dec (Last xs value)
 isLast [] value = No notInNil
 isLast (x :: []) value = case decEq x value of
                               Yes Refl => Yes LastOne
                               No notLast => No $ exhaustiveLast notLast
 isLast (x :: (y :: xs)) value = case isLast (y :: xs) value of
-                                     Yes prf => Yes $ LastCons prf
-                                     No contra => No $ ?rhs_2
+                                     Yes last => Yes $ LastCons last
+                                     No notLast => No $ (notLastCons notLast)
