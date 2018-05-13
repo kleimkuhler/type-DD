@@ -1,6 +1,7 @@
 module Hangman
 
 import Data.Vect
+import RemoveElem
 
 data WordState : (guesses : Nat) -> (letters : Nat) -> Type where
      MkWordState : (word : String) -> (missing : Vect letters Char) ->
@@ -12,6 +13,13 @@ data Finished : Type where
 
 data ValidInput : List Char -> Type where
      Letter : (c : Char) -> ValidInput [c]
+
+removeElem : (elem : a) -> (vect : Vect (S n) a) ->
+             {auto prf : Elem elem vect} -> Vect n a
+removeElem elem (elem :: xs) {prf = Here} = xs
+removeElem {n = Z} elem (x :: []) {prf = (There later)} = absurd later
+removeElem {n = (S k)} elem (x :: xs) {prf = (There later)}
+           = x :: removeElem elem xs
 
 nilNotValid : ValidInput [] -> Void
 nilNotValid (Letter _) impossible
@@ -35,5 +43,29 @@ readGuess = do putStr "Guess: "
                      No contra => do putStrLn "Invalid guess."
                                      readGuess
 
+processGuess : (letter : Char) -> WordState (S guesses) (S letters) ->
+               Either (WordState guesses (S letters)) (WordState (S guesses) letters)
+processGuess letter (MkWordState word missing)
+             = case isElem letter missing of
+                    Yes prf => Right (MkWordState word (removeElem letter missing))
+                    No contra => Left (MkWordState word missing)
+
 game : WordState (S guesses) (S letters) -> IO Finished
-game x = ?game_rhs
+game {guesses} {letters} st = do (_ ** Letter letter) <- readGuess
+                                 case processGuess letter st of
+                                       Left l => do putStrLn "Wrong!"
+                                                    case guesses of
+                                                          Z => pure (Lost l)
+                                                          S k => game l
+                                       Right r => do putStrLn "Right!"
+                                                     case letters of
+                                                           Z => pure (Won r)
+                                                           S k => game r
+
+main : IO ()
+main = do result <- game {guesses=2}
+                         (MkWordState "test" ['t', 'e', 's', 't'])
+          case result of
+                Won game => putStrLn "You win!"
+                Lost (MkWordState word missing) =>
+                     putStrLn ("You lose. The word was " ++ word)
