@@ -1,5 +1,7 @@
 module MergeSort
 
+import Data.List.Views
+
 data SplitList : List a -> Type where
      SplitNil : SplitList []
      SplitOne : SplitList [x]
@@ -25,3 +27,11 @@ mergeSort input with (splitList input)
   mergeSort [x] | SplitOne = [x]
   mergeSort (lefts ++ rights) | (SplitPair lefts rights) 
             = merge (mergeSort lefts) (mergeSort rights)
+
+total
+mergeSort' : Ord a => List a -> List a
+mergeSort' input with (splitRec input)
+  mergeSort' [] | SplitRecNil = []
+  mergeSort' [x] | SplitRecOne = [x]
+  mergeSort' (lefts ++ rights) | (SplitRecPair lrec rrec)
+             = merge (mergeSort' lefts | lrec) (mergeSort' rights | rrec)
